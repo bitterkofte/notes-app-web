@@ -5,12 +5,13 @@ import App from './App';
 import { Provider } from 'react-redux';
 import Navbar from "./components/Navbar"; 
 import { configureStore } from '@reduxjs/toolkit';
-import usersReducer from "./Redux/features/Users";
-
+import signinReducer from "./Redux/features/SignIn";
+import screenReducer from "./Redux/features/Screen";
 
 const store = configureStore({
   reducer: {
-    users: usersReducer,
+    isSignedIn: signinReducer,
+    setScreen: screenReducer,
   },
 });
 

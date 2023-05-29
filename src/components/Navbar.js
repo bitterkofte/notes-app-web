@@ -18,31 +18,31 @@ const Navbar = () => {
   };
 
   return (
-    <div className="fixed w-full p-4 flex top-0 justify-between items-center bg-neutral-300 dark:bg-neutral-900 drop-shadow-sm transition-all duration-500">
+    <div className="fixed z-10 w-full p-4 flex top-0 justify-between items-center bg-neutral-300 dark:bg-neutral-900 drop-shadow-sm transition-all duration-500">
       <div className="dark:text-neutral-200 font-black text-3xl select-none transition-all duration-500">
         Notes
       </div>
 
       {theme === "dark" ? (
         <div
-          className="p-3 bg-neutral-200 dark:bg-neutral-700 dark:hover:text-yellow-400 rounded-2xl transition-all duration-500"
+          className="p-3 bg-neutral-200 dark:bg-neutral-700 text-neutral-200 hover:text-yellow-400 rounded-2xl transition-all duration-500 cursor-pointer"
           onClick={handleThemeSwitch}
         >
           <BsSun
             size={32}
             weight="bold"
-            className="text-neutral-800 dark:hover:text-yellow-400 dark:text-neutral-200 transition-all duration-500"
+            className=""
           />
         </div>
       ) : (
         <div
-          className="p-3 bg-neutral-200 dark:bg-neutral-700 hover:text-sky-800 transition-all duration-500 rounded-2xl"
+          className="p-3 bg-neutral-200 hover:dark:bg-neutral-700 hover:text-sky-800 transition-all duration-500 rounded-2xl cursor-pointer"
           onClick={handleThemeSwitch}
         >
           <FaRegMoon
             size={32}
             weight="bold"
-            className="text-neutral-800 dark:text-neutral-200 hover:text-sky-800 transition-all duration-500"
+            className=""
           />
         </div>
       )}

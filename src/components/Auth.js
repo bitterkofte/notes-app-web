@@ -18,7 +18,6 @@ const Auth = ({ isSignedIn, toggleSignIn }) => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const dispatch = useDispatch();
-  const signin = useSelector((state) => state.isSignedIn.value)
   const screen = useSelector((state) => state.setScreen.value)
 
   const loginHandler = () => {
@@ -34,9 +33,9 @@ const Auth = ({ isSignedIn, toggleSignIn }) => {
           setSuccess("Logged in!");
           setTimeout(() => {
             setSuccess("");
-            toggleSignIn();
-            dispatch(setScreen("Home"))
-            console.log("Current Screen: ", screen);
+            // toggleSignIn();
+            dispatch(setScreen("home"))
+            // console.log("Current Screen: ", screen);
             // console.log("DURUMmmm:",signin)
           }, "1500");
         })
@@ -66,9 +65,9 @@ const Auth = ({ isSignedIn, toggleSignIn }) => {
     }
   };
 
-  useEffect(() => {
-    console.log("DURUM:",signin)
-  }, [signin])
+  // useEffect(() => {
+  //   console.log("DURUM:",signin)
+  // }, [signin])
   
 
   return (
@@ -76,7 +75,7 @@ const Auth = ({ isSignedIn, toggleSignIn }) => {
       <AnimatePresence>
         {error && (
           <motion.div
-            className="fixed top-0 p-3 bg-red-900 text-neutral-200 rounded-xl text-center transition-all duration-500 select-none"
+            className="fixed z-20 top-0 p-3 bg-red-900 text-neutral-200 rounded-xl text-center transition-all duration-500 select-none"
             initial={{ y: -60 }}
             animate={{ y: 20 }}
             exit={{ y: -3000 }}
@@ -87,7 +86,7 @@ const Auth = ({ isSignedIn, toggleSignIn }) => {
         )}
         {success && (
           <motion.div
-            className="fixed top-0 p-3 bg-green-800 text-neutral-200 rounded-xl text-center transition-all duration-500 select-none"
+            className="fixed z-20 top-0 p-3 bg-green-800 text-neutral-200 rounded-xl text-center transition-all duration-500 select-none"
             initial={{ y: -60 }}
             animate={{ y: 20 }}
             exit={{ y: -3000 }}

@@ -1,6 +1,12 @@
 import React, { useEffect, useRef } from "react";
 import { AnimatePresence } from "framer-motion";
-import { AiOutlineSearch, AiOutlinePoweroff, AiOutlineDelete, AiOutlinePlus } from "react-icons/ai";
+import {
+  AiOutlineSearch,
+  AiOutlinePoweroff,
+  AiOutlineDelete,
+  AiOutlinePlus,
+} from "react-icons/ai";
+import { HiArrowUturnLeft } from 'react-icons/hi2'
 import { useState } from "react";
 import AddUserModal from "./AddUserModal";
 import { auth, collUser, db } from "../firebase";
@@ -25,6 +31,8 @@ const Home = ({ isSignedIn, toggleSignIn }) => {
   const [userInfo, setUserInfo] = useState([]);
   const [search, setSearch] = useState("");
   const [sbActive, setSbActive] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [toBeDeleted, setToBeDeleted] = useState([]);
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const screen = useSelector((state) => state.setScreen.value);
@@ -33,17 +41,17 @@ const Home = ({ isSignedIn, toggleSignIn }) => {
   let inputRef = useRef();
   useEffect(() => {
     let handler = (e) => {
-      if (!inputRef.current.contains(e.target)) {
+      if (sbActive & !inputRef.current.contains(e.target)) {
         setSbActive(false);
         // console.log(modal)
-        console.log("INPUT: ",inputRef.current);
+        console.log("INPUT: ", inputRef.current);
       }
     };
     document.addEventListener("mousedown", handler);
     return () => {
       document.removeEventListener("mousedown", handler);
     };
-  }, []);
+  }, [sbActive]);
 
   const modalHandler = () => {
     setModal(!modal);
@@ -71,11 +79,22 @@ const Home = ({ isSignedIn, toggleSignIn }) => {
       });
   }
 
+  const deleteHandler = () => {
+    setDeleting(true);
+  };
+
+  const setToBeDeletedNotes = (nts) => {
+    console.log("HOME: ",nts)
+    setToBeDeleted((prev) => [...prev, nts]);
+  };
+
+  useEffect(() => {
+    console.log("Silinecekler: ", toBeDeleted);
+  }, [toBeDeleted]);
+
   return (
     <div className="w-full min-h-screen md:min-h-screen md:mt-0 mt-10 p-10 flex flex-col justify-center items-center bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-200 transition-all duration-500">
-
-      <div className="fixed top-20 pt-5 pb-3 w-full sm:flex-wrap sm:px-6 md:py-10 flex justify-center items-center gap-5 backdrop-blur-lg">
-
+      <div className="fixed z-[8] z top-20 pt-5 pb-3 w-full sm:flex-wrap sm:px-6 md:py-10 flex justify-center items-center gap-5 backdrop-blur-lg">
         <div
           className={`w-[500px] flex justify-center items-center border-2 border-neutral-500 rounded-xl bg-transparent ${
             sbActive && "border-purple-600"
@@ -95,15 +114,25 @@ const Home = ({ isSignedIn, toggleSignIn }) => {
           className="py-2 px-3 rounded-xl bg-neutral-700 text-neutral-300 hover:scale-105 hover:bg-green-600 transition-all duration-500 select-none"
           onClick={modalHandler}
         >
-          <AiOutlinePlus size={24}/>
+          <AiOutlinePlus size={24} />
         </button>
 
         <button
+          // ! DELETE
           className="py-2 px-3 rounded-xl bg-neutral-700 text-neutral-300 hover:scale-105 hover:bg-red-600 transition-all duration-500 select-none"
-          onClick={modalHandler}
+          onClick={deleteHandler}
         >
-          <AiOutlineDelete size={24}/>
+          <AiOutlineDelete size={24} />
         </button>
+
+        {deleting && (
+          <button
+            className="py-2 px-3 rounded-xl bg-neutral-700 text-neutral-300 hover:scale-105 hover:bg-cyan-700 transition-all duration-500 select-none"
+            onClick={() => setDeleting(false)}
+          >
+            <HiArrowUturnLeft size={24} />
+          </button>
+        )}
       </div>
 
       <AnimatePresence>
@@ -118,15 +147,22 @@ const Home = ({ isSignedIn, toggleSignIn }) => {
       </AnimatePresence>
 
       <AnimatePresence>
-      <div className="w-full max-w-2xl mt-10 flex flex-wrap items-stretch content-stretch gap-5 dark:text-neutral-200 select-none">
-        {userInfo.notes?.map((note) => {
-          return <CardTile key={note.time} note={note} />;
-        })}
-      </div>
+        <div className="w-full max-w-2xl mt-10 flex flex-wrap items-stretch content-stretch gap-5 dark:text-neutral-200 select-none">
+          {userInfo.notes?.map((note) => {
+            return (
+              <CardTile
+                key={note.time}
+                note={note}
+                deleting={deleting}
+                setToBeDeletedNotes={setToBeDeletedNotes}
+              />
+            );
+          })}
+        </div>
       </AnimatePresence>
 
       <button
-        className="fixed bottom-5 right-5 p-3 mt-6 rounded-xl bg-red-700 font-bold text-red-300 hover:text-neutral-100 transition-all duration-300 select-none"
+        className="fixed bottom-5 right-5 p-3 mt-6 rounded-xl bg-red-700 font-bold text-red-300 hover:text-neutral-100 hover:shadow-lg hover:shadow-red-500 transition-all duration-300 select-none"
         onClick={logOutHandler}
       >
         <AiOutlinePoweroff size={32} />

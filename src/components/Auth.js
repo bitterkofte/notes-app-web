@@ -97,9 +97,8 @@ const Auth = ({ isSignedIn, toggleSignIn }) => {
         )}
       </AnimatePresence>
 
-      <h1 className="text-6xl font-bold mb-10 dark:text-neutral-200">Login</h1>
+      <h1 className="p-3 text-6xl font-bold mb-9 dark:text-neutral-200">Login</h1>
       
-      {/* <form className="flex flex-col justify-center items-center gap-5"> */}
         <input
           className="w-60 p-2 border-2 border-neutral-400 rounded-xl bg-transparent placeholder-neutral-500 focus:outline-none focus:border-purple-600 dark:text-neutral-50 caret-purple-600 transition-all duration-500"
           type="text"
@@ -119,11 +118,10 @@ const Auth = ({ isSignedIn, toggleSignIn }) => {
         >
           Login
         </button>
-      {/* </form> */}
 
       <button
         className="fixed bottom-5 right-5 w-32 py-2 px-3 mt-6 rounded-xl bg-gradient-to-tr from-indigo-700 to-violet-700 text-neutral-300 hover:scale-110 transition-all duration-300 select-none"
-        onClick={() => setRegisterScreen(true)}
+        onClick={() => dispatch(setScreen("register"))}
       >
         Register
       </button>

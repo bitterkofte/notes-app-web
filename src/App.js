@@ -5,6 +5,7 @@ import Home from "./components/Home";
 import Auth from "./components/Auth";
 import { useSelector } from "react-redux";
 import EditNote from "./components/EditNote";
+import Register from "./components/Register";
 
 function App() {
   // const [isSignedIn, setIsSignedIn] = useState(false);
@@ -22,6 +23,10 @@ function App() {
     switch (screen) {
       case "auth":
         return <Auth />
+        break;
+      
+      case "register":
+        return <Register />
         break;
       
         case "home":

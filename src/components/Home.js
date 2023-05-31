@@ -94,7 +94,7 @@ const Home = ({ isSignedIn, toggleSignIn }) => {
 
   return (
     <div className="w-full min-h-screen md:min-h-screen md:mt-0 mt-10 p-10 flex flex-col justify-center items-center bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-200 transition-all duration-500">
-      <div className="fixed z-[8] z top-20 pt-5 pb-3 w-full sm:flex-wrap sm:px-6 md:py-10 flex justify-center items-center gap-5 backdrop-blur-lg">
+      <div className="fixed z-[8] z top-20 pt-5 pb-3 w-full sm:flex-wrap sm:px-6 md:py-10 flex justify-center items-center gap-5 backdrop-blur-lg transition-all duration-500 ease-in-out">
         <div
           className={`w-[500px] flex justify-center items-center border-2 border-neutral-500 rounded-xl bg-transparent ${
             sbActive && "border-purple-600"
@@ -125,14 +125,14 @@ const Home = ({ isSignedIn, toggleSignIn }) => {
           <AiOutlineDelete size={24} />
         </button>
 
-        {deleting && (
+        {/* {deleting && ( */}
           <button
-            className="py-2 px-3 rounded-xl bg-neutral-700 text-neutral-300 hover:scale-105 hover:bg-cyan-700 transition-all duration-500 select-none"
+            className={`${deleting ? "block" : "hidden"} py-2 px-3 rounded-xl bg-neutral-700 text-neutral-300 hover:scale-105 hover:bg-cyan-700 transition-all duration-500 ease-in-out select-none`}
             onClick={() => setDeleting(false)}
           >
             <HiArrowUturnLeft size={24} />
           </button>
-        )}
+        {/* )} */}
       </div>
 
       <AnimatePresence>
@@ -162,7 +162,7 @@ const Home = ({ isSignedIn, toggleSignIn }) => {
       </AnimatePresence>
 
       <button
-        className="fixed bottom-5 right-5 p-3 mt-6 rounded-xl bg-red-700 font-bold text-red-300 hover:text-neutral-100 hover:shadow-lg hover:shadow-red-500 transition-all duration-300 select-none"
+        className="fixed bottom-5 right-5 p-3 mt-6 rounded-xl bg-red-700 font-bold text-neutral-100 border-[3px] border-transparent hover:border-neutral-100 transition-all duration-700 ease-in-out select-none"
         onClick={logOutHandler}
       >
         <AiOutlinePoweroff size={32} />

@@ -88,27 +88,27 @@ const Home = ({ isSignedIn, toggleSignIn }) => {
     if (deleting) {
       if (toBeDeleted.length == 0) {
         setError("You must first choose the notes that you want to delete!");
-          setTimeout(() => {
-            setError("");
-          }, "4000");
+        setTimeout(() => {
+          setError("");
+        }, "4000");
       } else {
-      const filteredNotes = userInfo.notes?.filter(
-        (item) => !toBeDeleted.includes(item.time)
-      );
-      console.log("Yeni array: ", filteredNotes);
-      const docRef = doc(db, 'users', userInfo.id);
-      updateDoc(docRef, {
-        notes: filteredNotes,
-      })
-      .then(() => {
-        setLoading(true)
-        setSuccess("Selected notes have been deleted!");
-        setDeleting(false);
+        const filteredNotes = userInfo.notes?.filter(
+          (item) => !toBeDeleted.includes(item.time)
+        );
+        console.log("Yeni array: ", filteredNotes);
+        const docRef = doc(db, "users", userInfo.id);
+        updateDoc(docRef, {
+          notes: filteredNotes,
+        }).then(() => {
+          setLoading(true);
+          setSuccess("Selected notes have been deleted!");
+          setDeleting(false);
           setTimeout(() => {
             setSuccess("");
-            setToBeDeleted([])
+            setToBeDeleted([]);
           }, "3000");
-      })}
+        });
+      }
     } else {
       setDeleting(true);
     }
@@ -123,11 +123,11 @@ const Home = ({ isSignedIn, toggleSignIn }) => {
   }, [toBeDeleted]);
 
   return (
-    <div className="w-full min-h-screen md:min-h-screen md:mt-0 mt-10 p-10 flex flex-col justify-center items-center bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-200 transition-all duration-500">
-      <CoolAlert success={success} error={error}/>
-      <div className="fixed z-[8] z top-20 pt-5 pb-3 w-full sm:flex-wrap sm:px-6 md:py-10 flex justify-center items-center gap-5 backdrop-blur-lg transition-all duration-500 ease-in-out">
+    <div className="w-full min-h-screen flex justify-center sm:mt-28 md:mt-24 sm:p-0 p-0 bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-200 transition-all duration-500">
+      <CoolAlert success={success} error={error} />
+      <div className="fixed z-[8] z top-20 left-0 pt-5 pb-3 w-full sm:flex-col sm:px-0 md:py-10 flex justify-center items-center content-center gap-5 backdrop-blur-lg transition-all duration-500 ease-in-out">
         <div
-          className={`w-[500px] flex justify-center items-center border-2 border-neutral-500 rounded-xl bg-transparent ${
+          className={`sm:min-w-[300px] md:min-w-[500px] md:max-w-[900px] lg:min-w-[800px] flex justify-center items-center border-2 border-neutral-500 rounded-xl bg-transparent ${
             sbActive && "border-purple-600"
           } dark:text-neutral-50 caret-purple-600 transition-all duration-200`}
           onClick={() => setSbActive(true)}
@@ -141,8 +141,10 @@ const Home = ({ isSignedIn, toggleSignIn }) => {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
+
+        <div className='flex justify-center items-center gap-5'>
         <button
-          className="py-2 px-3 rounded-xl bg-neutral-700 text-neutral-300 hover:scale-105 hover:bg-green-600 transition-all duration-500 select-none"
+          className="sm:px-8 py-2 px-3 rounded-xl bg-neutral-700 text-neutral-300 hover:scale-105 hover:bg-green-600 transition-all duration-500 select-none"
           onClick={modalHandler}
         >
           <AiOutlinePlus size={24} />
@@ -150,17 +152,16 @@ const Home = ({ isSignedIn, toggleSignIn }) => {
 
         <button
           // ! DELETE
-          className="py-2 px-3 rounded-xl bg-neutral-700 text-neutral-300 hover:scale-105 hover:bg-red-600 transition-all duration-500 select-none"
+          className="sm:px-8 py-2 px-3 rounded-xl bg-neutral-700 text-neutral-300 hover:scale-105 hover:bg-red-600 transition-all duration-500 select-none"
           onClick={deleteHandler}
         >
           <AiOutlineDelete size={24} />
         </button>
 
-        {/* {deleting && ( */}
         <button
           className={`${
             deleting ? "block" : "hidden"
-          } py-2 px-3 rounded-xl bg-neutral-700 text-neutral-300 hover:scale-105 hover:bg-cyan-700 transition-all duration-500 ease-in-out select-none`}
+          } sm:px-7 py-2 px-3 rounded-xl bg-neutral-700 text-neutral-300 hover:scale-105 hover:bg-cyan-700 transition-all duration-500 ease-in-out select-none`}
           onClick={() => {
             setToBeDeleted([]);
             setDeleting(false);
@@ -168,7 +169,7 @@ const Home = ({ isSignedIn, toggleSignIn }) => {
         >
           <HiArrowUturnLeft size={24} />
         </button>
-        {/* )} */}
+        </div>
       </div>
 
       <AnimatePresence>
@@ -183,24 +184,28 @@ const Home = ({ isSignedIn, toggleSignIn }) => {
       </AnimatePresence>
 
       <AnimatePresence>
-        <div className="w-full max-w-2xl mt-10 flex flex-wrap items-stretch content-stretch gap-5 dark:text-neutral-200 select-none">
+        <div className="w-full max-w-5xl sm:mt-10 mt-20 flex justify-start content-start flex-wrap gap-5 dark:text-neutral-200 select-none">
           {userInfo.notes?.length === 0 ? (
             <div className="w-full text-center dark:text-neutral-400">
               Let's start with adding a note with the plus button next to the
               search bar.
             </div>
           ) : (
-            userInfo.notes?.map((note) => {
-              return (
-                <CardTile
-                  key={note.time}
-                  note={note}
-                  deleting={deleting}
-                  setToBeDeletedNotes={setToBeDeletedNotes}
-                  toBeDeleted={toBeDeleted}
-                />
-              );
-            })
+            userInfo.notes
+              ?.filter((note) => {
+                return search.toLowerCase() === '' ? note : note.title.toLowerCase().includes(search);
+              })
+              .map((note) => {
+                return (
+                  <CardTile
+                    key={note.time}
+                    note={note}
+                    deleting={deleting}
+                    setToBeDeletedNotes={setToBeDeletedNotes}
+                    toBeDeleted={toBeDeleted}
+                  />
+                );
+              })
           )}
         </div>
       </AnimatePresence>

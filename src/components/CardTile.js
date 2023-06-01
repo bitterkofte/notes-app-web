@@ -3,17 +3,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { setScreen } from "../Redux/features/Screen";
 import { motion } from "framer-motion";
 
-const CardTile = ({ note, deleting, setToBeDeletedNotes }) => {
+const CardTile = ({ note, deleting, setToBeDeletedNotes, toBeDeleted }) => {
   const [isNote, setIsNote] = useState(false);
   const [ id, setId] = useState("");
   const dispatch = useDispatch();
   const screen = useSelector((state) => state.setScreen.value);
 
   const openNote = () => {
-    setId(note.time);
     if(deleting){
-      setToBeDeletedNotes(note.id);
-      console.log("CARDTILE: ",note.id);
+      setId(note.time);
+      setToBeDeletedNotes(note.time);
+      console.log("CARDTILE: ",note.time);
+    } else {
+      //open note
     }
     // setIsNote(!isNote);
     // dispatch(setScreen("edit"));
@@ -28,7 +30,7 @@ const CardTile = ({ note, deleting, setToBeDeletedNotes }) => {
       exit={{ opacity: 0 }}
       transition={{ duration: 1.5 }}
     >
-      {deleting && <div className={`absolute top-0 left-0 w-full h-full ${id == note.time ? "bg-tp-red" : "bg-tp-white"} `}></div>}
+      {deleting && <div className={`absolute top-0 left-0 w-full h-full ${toBeDeleted.includes(note.time) ? "bg-tp-red" : "bg-tp-white"} `}></div>}
       <h1 className="font-semibold text-lg">{note.title}</h1>
       <p>{note.details}</p>
     </motion.div>

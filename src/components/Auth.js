@@ -126,7 +126,7 @@ const Auth = ({ isSignedIn, toggleSignIn }) => {
         Register
       </button>
 
-      <div className='fixed bottom-5 left-5 text-neutral-700 dark:text-neutral-200'>v 1.12</div>
+      <div className='fixed bottom-5 left-5 text-neutral-600 dark:text-neutral-400 select-none'>v 3.2</div>
     </div>
   );
 };

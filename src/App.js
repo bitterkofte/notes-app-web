@@ -6,6 +6,7 @@ import Auth from "./components/Auth";
 import { useSelector } from "react-redux";
 import EditNote from "./components/EditNote";
 import Register from "./components/Register";
+import MetaContainer from "./components/MetaContainer";
 
 function App() {
   // const [isSignedIn, setIsSignedIn] = useState(false);
@@ -45,6 +46,7 @@ function App() {
 
   return (
     <div className="w-full min-h-screen md:min-h-screen md:mt-0 mt-10 font-LGC p-10 bg-neutral-200 flex flex-col justify-center items-center dark:bg-neutral-800 transition-all duration-500">
+      <MetaContainer/>
       {/* {isSignedIn == true ? (
         <Home isSignedIn={isSignedIn} toggleSignIn={toggleSignIn} />
       ) : (

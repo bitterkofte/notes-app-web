@@ -8,7 +8,6 @@ import {
 } from "react-icons/ai";
 import { HiArrowUturnLeft } from "react-icons/hi2";
 import { useState } from "react";
-import AddUserModal from "./AddUserModal";
 import { auth, collUser, db } from "../firebase";
 import { signOut } from "firebase/auth";
 import {
@@ -28,9 +27,11 @@ import { setScreen } from "../Redux/features/Screen";
 import Auth from "./Auth";
 import AddNote from "./AddNote";
 import CoolAlert from "./CoolAlert";
+import CoolDropDown from "./CoolDropDown";
 
 const Home = ({ isSignedIn, toggleSignIn }) => {
   const [modal, setModal] = useState(false);
+  const [sortBy, setSortBy] = useState("");
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
   const [userInfo, setUserInfo] = useState([]);
@@ -40,8 +41,11 @@ const Home = ({ isSignedIn, toggleSignIn }) => {
   const [toBeDeleted, setToBeDeleted] = useState([]);
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
-  const screen = useSelector((state) => state.setScreen.value);
+  // const screen = useSelector((state) => state.setScreen.value);
   const q = query(collUser, where("email", "==", auth.currentUser.email));
+  let sortedNotes = [];
+  // let sortedNotes = [{title: "a", details:"b"}]
+  // let sortedNotes = useRef();
 
   let inputRef = useRef();
   useEffect(() => {
@@ -86,7 +90,7 @@ const Home = ({ isSignedIn, toggleSignIn }) => {
 
   const deleteHandler = () => {
     if (deleting) {
-      if (toBeDeleted.length == 0) {
+      if (toBeDeleted.length === 0) {
         setError("You must first choose the notes that you want to delete!");
         setTimeout(() => {
           setError("");
@@ -122,6 +126,59 @@ const Home = ({ isSignedIn, toggleSignIn }) => {
     console.log("Silinecekler: ", toBeDeleted);
   }, [toBeDeleted]);
 
+  const sortHandler = (s) => {
+    setSortBy(s);
+  };
+
+  useEffect(() => {
+    console.log(sortBy);
+  }, [sortBy]);
+
+  switch (sortBy) {
+    case "titleAsc":
+      sortedNotes = userInfo.notes?.sort((a, b) => {
+        const titleA = a.title.toUpperCase(); // Convert names to uppercase for case-insensitive sorting
+        const titleB = b.title.toUpperCase();
+
+        if (titleA < titleB) {
+          return -1; // a should come before b
+        } else if (titleA > titleB) {
+          return 1; // a should come after b
+        } else {
+          return 0; // names are equal, no sorting needed
+        }
+      });
+      break;
+
+    case "titleDes":
+      sortedNotes = userInfo.notes?.sort((a, b) => {
+        const titleA = a.title.toUpperCase(); // Convert names to uppercase for case-insensitive sorting
+        const titleB = b.title.toUpperCase();
+
+        if (titleA < titleB) {
+          return 1; // a should come before b
+        } else if (titleA > titleB) {
+          return -1; // a should come after b
+        } else {
+          return 0; // names are equal, no sorting needed
+        }
+      });
+      break;
+
+    case "timeAsc":
+      sortedNotes = userInfo.notes?.sort((a, b) => a.time - b.time);
+      break;
+
+    case "timeDes":
+      sortedNotes = userInfo.notes?.sort((a, b) => b.time - a.time);
+      console.log("SIRALI: ", sortedNotes);
+      break;
+
+    default:
+      sortedNotes = userInfo.notes?.sort((a, b) => a.time - b.time);
+      break;
+  }
+
   return (
     <div className="w-full min-h-screen flex justify-center sm:mt-28 md:mt-24 sm:p-0 p-0 bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-200 transition-all duration-500">
       <CoolAlert success={success} error={error} />
@@ -142,33 +199,35 @@ const Home = ({ isSignedIn, toggleSignIn }) => {
           />
         </div>
 
-        <div className='flex justify-center items-center gap-5'>
-        <button
-          className="sm:px-8 py-2 px-3 rounded-xl bg-neutral-700 text-neutral-300 hover:scale-105 hover:bg-green-600 transition-all duration-500 select-none"
-          onClick={modalHandler}
-        >
-          <AiOutlinePlus size={24} />
-        </button>
+        <div className="flex justify-center items-center gap-5">
+          <button
+            className="sm:px-8 py-2 px-3 rounded-xl bg-neutral-700 text-neutral-300 hover:scale-105 hover:bg-green-600 transition-all duration-500 select-none"
+            onClick={modalHandler}
+          >
+            <AiOutlinePlus size={24} />
+          </button>
 
-        <button
-          // ! DELETE
-          className="sm:px-8 py-2 px-3 rounded-xl bg-neutral-700 text-neutral-300 hover:scale-105 hover:bg-red-600 transition-all duration-500 select-none"
-          onClick={deleteHandler}
-        >
-          <AiOutlineDelete size={24} />
-        </button>
+          <button
+            // ! DELETE
+            className="sm:px-8 py-2 px-3 rounded-xl bg-neutral-700 text-neutral-300 hover:scale-105 hover:bg-red-600 transition-all duration-500 select-none"
+            onClick={deleteHandler}
+          >
+            <AiOutlineDelete size={24} />
+          </button>
 
-        <button
-          className={`${
-            deleting ? "block" : "hidden"
-          } sm:px-7 py-2 px-3 rounded-xl bg-neutral-700 text-neutral-300 hover:scale-105 hover:bg-cyan-700 transition-all duration-500 ease-in-out select-none`}
-          onClick={() => {
-            setToBeDeleted([]);
-            setDeleting(false);
-          }}
-        >
-          <HiArrowUturnLeft size={24} />
-        </button>
+          <button
+            className={`${
+              deleting ? "block" : "hidden"
+            } sm:px-7 py-2 px-3 rounded-xl bg-neutral-700 text-neutral-300 hover:scale-105 hover:bg-cyan-700 transition-all duration-500 ease-in-out select-none`}
+            onClick={() => {
+              setToBeDeleted([]);
+              setDeleting(false);
+            }}
+          >
+            <HiArrowUturnLeft size={24} />
+          </button>
+
+          <CoolDropDown sortBy={sortBy} sortHandler={sortHandler} />
         </div>
       </div>
 
@@ -191,9 +250,11 @@ const Home = ({ isSignedIn, toggleSignIn }) => {
               search bar.
             </div>
           ) : (
-            userInfo.notes
+            sortedNotes
               ?.filter((note) => {
-                return search.toLowerCase() === '' ? note : note.title.toLowerCase().includes(search);
+                return search.toLowerCase() === ""
+                  ? note
+                  : note.title.toLowerCase().includes(search);
               })
               .map((note) => {
                 return (

@@ -21,9 +21,37 @@ const CardTile = ({ note, deleting, setToBeDeletedNotes, toBeDeleted }) => {
     // dispatch(setScreen("edit"));
   };
 
+  let theColor = "";
+  switch (note.color) {
+    case "gray":
+      theColor = "bg-neutral-300 dark:bg-neutral-600";
+      break;
+
+    case "red":
+      theColor = "bg-red-400 dark:bg-red-800";
+      break;
+  
+    case "yellow":
+      theColor = "bg-yellow-400 dark:bg-yellow-600";
+      break;
+  
+    case "blue":
+      theColor = "bg-blue-400 dark:bg-blue-800";
+      break;
+  
+    case "green":
+      theColor = "bg-green-400 dark:bg-green-800";
+      break;
+  
+    default:
+      theColor = "bg-neutral-300 dark:bg-neutral-600";
+      break;
+  }
+
   return (
     <motion.div
-      className="relative z-0 sm:p-3 p-5 overflow-hidden rounded-xl bg-neutral-300 dark:bg-neutral-600 hover:scale-105 hover:drop-shadow-lg transition-all duration-400"
+      // className={`relative z-0 sm:p-3 p-5 overflow-hidden rounded-xl ${note.color ? `bg-${note.color}-100 dark:bg-${note.color}-200` : "bg-neutral-300 dark:bg-neutral-600"} hover:scale-105 hover:drop-shadow-lg transition-all ease-in-out duration-400`}
+      className={`relative z-0 sm:p-3 p-5 overflow-hidden rounded-xl ${theColor} hover:scale-105 hover:drop-shadow-lg transition-all ease-in-out duration-400`}
       onClick={openNote}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
